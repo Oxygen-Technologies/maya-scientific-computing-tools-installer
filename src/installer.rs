@@ -34,7 +34,7 @@ impl Installer {
             Err(_) => return Err("Error executing install.bat.")
         };
 
-        let output_error =  String::from_utf8_lossy(&output.stderr);
+        let output_error = String::from_utf8_lossy(&output.stderr);
 
         if !output_error.is_empty() {
             eprintln!("{}", output_error);
@@ -45,15 +45,16 @@ impl Installer {
     }
 
     fn add_mayapy_exec_to_path(&self) -> InstallResult<()> {
-        let path_var = env::vars().collect::<HashMap<String, String>>();
-        let path_var = match path_var.get("PATH") {
-            Some(var) => {
-                format!("{};{}", var, &self.config.maya_bin_dir.to_str().unwrap())
-            }
-            None => return Err("Can't get path var.")
-        };
+        // ERROR: Not available in release mode
+        // let path_var = env::vars().collect::<HashMap<String, String>>();
+        // let path_var = match path_var.get("PATH") {
+        //     Some(var) => {
+        //         format!("{};{}", var, &self.config.maya_bin_dir.to_str().unwrap())
+        //     }
+        //     None => return Err("Can't get path var.")
+        // };
 
-        env::set_var("PATH", path_var);
+        env::set_var("PATH", format!("{}", &self.config.maya_bin_dir.to_str().unwrap()));
 
         Ok(())
     }
