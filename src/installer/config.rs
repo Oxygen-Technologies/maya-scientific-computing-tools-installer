@@ -7,6 +7,27 @@ pub struct Config {
     pub pkg_name: String,
 }
 
+impl Config {
+    pub fn new(maya_location: String, pkg_name: String) -> Self {
+        let config = Self { maya_location, pkg_name };
+        config.check();
+        config
+    }
+
+    fn check(&self) {
+        self.check_args();
+        self.check_dependent_pkgs();
+    }
+
+    fn check_args(&self) {
+        // TODO: 检查 maya 路径与 pkg 名称是否正确
+    }
+
+    fn check_dependent_pkgs(&self) {
+        // TODO: 检查当前安装的库依赖库是否齐全
+    }
+}
+
 impl From<&Vec<String>> for Config {
     fn from(args: &Vec<String>) -> Self {
         let (maya_location, pkg_name) = match (args.get(1), args.get(2)) {
@@ -17,6 +38,6 @@ impl From<&Vec<String>> for Config {
             }
         };
 
-        Self { maya_location, pkg_name }
+        Self::new(maya_location, pkg_name)
     }
 }

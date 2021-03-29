@@ -13,6 +13,11 @@ impl Installer {
     }
 
     pub fn install(&self) {
-        // TODO: impl install
+        self.add_mayapy_exec_to_path()
+        // TODO: 安装
+    }
+
+    fn add_mayapy_exec_to_path(&self) {
+        // TODO: 添加 mayapy.exe 到环境变量
     }
 }
