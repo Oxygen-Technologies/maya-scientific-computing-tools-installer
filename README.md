@@ -21,3 +21,6 @@ eg:
 ```shell
 install.exe C:\Maya\Maya2018 numpy
 ```
+
+## Download
+https://github.com/Oxygen-Technologies/Maya-Scientific-Computing-Tools-Installer/releases
