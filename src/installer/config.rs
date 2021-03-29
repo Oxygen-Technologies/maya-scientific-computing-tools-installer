@@ -1,43 +1,71 @@
-use std::convert::From;
-use std::process;
+use std::env;
+use std::path::PathBuf;
+
+type ConfigResult<T> = Result<T, &'static str>;
 
 #[derive(Debug)]
 pub struct Config {
-    pub maya_location: String,
+    pub maya_location_path: PathBuf,
+    pub mayapy_exec_path: PathBuf,
+    pub tools_path: PathBuf,
     pub pkg_name: String,
 }
 
 impl Config {
-    pub fn new(maya_location: String, pkg_name: String) -> Self {
-        let config = Self { maya_location, pkg_name };
-        config.check();
-        config
-    }
-
-    fn check(&self) {
-        self.check_args();
-        self.check_dependent_pkgs();
-    }
-
-    fn check_args(&self) {
-        // TODO: 检查 maya 路径与 pkg 名称是否正确
-    }
-
-    fn check_dependent_pkgs(&self) {
-        // TODO: 检查当前安装的库依赖库是否齐全
-    }
-}
-
-impl From<&Vec<String>> for Config {
-    fn from(args: &Vec<String>) -> Self {
-        let (maya_location, pkg_name) = match (args.get(1), args.get(2)) {
+    pub fn new(args: Vec<String>) -> ConfigResult<Config> {
+        let (maya_location_path, pkg_name) = match (args.get(1), args.get(2)) {
             (Some(maya_location), Some(pkg_name)) => (maya_location.clone(), pkg_name.clone()),
+            (Some(_), None) => return Err("Need pkg name."),
             _ => {
-                eprintln!("Args Error: Need maya location path and pkg name.");
-                process::exit(1);
+                return Err("Need maya location path.");
             }
         };
 
-        Self::new(maya_location, pkg_name)
+        let maya_location_path = PathBuf::from(maya_location_path);
+        let mut mayapy_exec_path = maya_location_path.clone();
+        mayapy_exec_path.push("bin");
+        mayapy_exec_path.push("mayapy.exe");
+
+        let tools_path = match env::current_dir() {
+            Ok(mut dir) => {
+                dir.push("maya-scientific-computing-tools");
+                if !dir.is_dir() {
+                    return Err("Need maya scientific computing tools.")
+                }
+                dir
+            }
+            Err(_) => return Err("Get current dir error.")
+        };
+
+        let config = Self {
+            maya_location_path,
+            mayapy_exec_path,
+            tools_path,
+            pkg_name,
+        };
+        config.check()?;
+
+        Ok(config)
+    }
+
+    fn check(&self) -> ConfigResult<()> {
+        self.check_mayapy_exec_path()?;
+        self.check_dependent_pkgs()?;
+
+        Ok(())
+    }
+
+    fn check_mayapy_exec_path(&self) -> ConfigResult<()> {
+        if !self.mayapy_exec_path.is_file() {
+            return Err("This is not a valid maya location path.");
+        }
+
+        Ok(())
+    }
+
+    fn check_dependent_pkgs(&self) -> ConfigResult<()> {
+        // TODO: 检查当前安装的库依赖库是否齐全
+
+        Ok(())
     }
 }
