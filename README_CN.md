@@ -4,6 +4,8 @@
 ![avatar](./resource/maya-scientific-computing-tools.png)
 
 ## 包含的库
+- pip ```20.3.4```
+- cython ```0.29.22```
 - numpy ```1.16.6```
 - scipy ```1.2.3```
 - pandas ```0.24.2```
@@ -21,3 +23,6 @@ eg:
 ```shell
 install.exe C:\Maya\Maya2018 numpy
 ```
+
+## 下载
+https://github.com/Oxygen-Technologies/Maya-Scientific-Computing-Tools-Installer/releases
