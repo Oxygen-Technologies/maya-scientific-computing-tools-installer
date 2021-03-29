@@ -9,8 +9,11 @@ fn main() {
         eprintln!("Init Error: {}", err);
         process::exit(1);
     });
-    let installer = Installer::new(config);
 
-    println!("{:#?}", installer);
-    installer.install();
+    let installer = Installer::new(config);
+    println!("Installing {}...", &installer.config.pkg_name);
+    installer.install().unwrap_or_else(|err| {
+        eprintln!("Install Error: {}", err);
+        process::exit(2);
+    });
 }

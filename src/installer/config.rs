@@ -6,7 +6,7 @@ type ConfigResult<T> = Result<T, &'static str>;
 #[derive(Debug)]
 pub struct Config {
     pub maya_location_path: PathBuf,
-    pub mayapy_exec_path: PathBuf,
+    pub maya_bin_dir: PathBuf,
     pub tools_path: PathBuf,
     pub pkg_name: String,
 }
@@ -22,9 +22,8 @@ impl Config {
         };
 
         let maya_location_path = PathBuf::from(maya_location_path);
-        let mut mayapy_exec_path = maya_location_path.clone();
-        mayapy_exec_path.push("bin");
-        mayapy_exec_path.push("mayapy.exe");
+        let mut maya_bin_dir = maya_location_path.clone();
+        maya_bin_dir.push("bin");
 
         let tools_path = match env::current_dir() {
             Ok(mut dir) => {
@@ -39,7 +38,7 @@ impl Config {
 
         let config = Self {
             maya_location_path,
-            mayapy_exec_path,
+            maya_bin_dir,
             tools_path,
             pkg_name,
         };
@@ -56,7 +55,7 @@ impl Config {
     }
 
     fn check_mayapy_exec_path(&self) -> ConfigResult<()> {
-        if !self.mayapy_exec_path.is_file() {
+        if !self.maya_bin_dir.is_dir() {
             return Err("This is not a valid maya location path.");
         }
 
